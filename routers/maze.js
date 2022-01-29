@@ -36,6 +36,11 @@ router.post('/find', function (req, res) {
     const { operator, value } = req.body;
     let oper;
     try {
+      if (operator === undefined || value === undefined) {
+        throw new Error(
+          'Request should contain "operator" and "value" properties'
+        );
+      }
       if (typeof value != 'number') {
         throw new Error('Value should be a number');
       }
@@ -52,10 +57,13 @@ router.post('/find', function (req, res) {
 
 router.post('/create', function (req, res) {
   try {
-    if (!req.body.maze) {
+    if (req.body.maze === undefined) {
       throw new Error('Request should contain "maze" property');
     }
     maze = req.body.maze;
+    if (!Array.isArray(maze)) {
+      throw new Error('Maze should be an array');
+    }
     validateArray(maze);
     return res.status(200).json({ result: 'Success' });
   } catch (err) {
